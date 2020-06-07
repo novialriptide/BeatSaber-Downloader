@@ -11,7 +11,7 @@ path = "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data
 
 TITLE_MSG = combine_multiple_lines([
     f"{Fore.BLACK}{Back.WHITE}BeatSaber Custom Level Installer{Fore.RESET}{Back.RESET}",
-    f"Developed by Andrew Hong"
+    f"Developed by u/NovialRiptide"
 ])
 
 COMMANDS = [
@@ -23,7 +23,8 @@ threads = []
 while(True):
     print(TITLE_MSG)
     
-    command_input = input("> ")
+    #command_input = input("> ")
+    command_input = "I"
     if command_input == COMMANDS[0]:    
         beatsaver_id = input("Input BeatSaver ID to install\n> ")
         data = get_beatsaver_data(beatsaver_id)
