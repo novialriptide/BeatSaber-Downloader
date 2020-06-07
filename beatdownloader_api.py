@@ -48,7 +48,7 @@ def get_difficulties(data):
 
     return valid_difficulties, valid_difficulties_display
 
-def download_beatmap(path, id):
+def download_beatmap(path, id, downloaded_keys):
     def clean_text(text):
         valid_chars = [' ','-','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6','7','8','9','0']
         new_text = ''
@@ -58,14 +58,18 @@ def download_beatmap(path, id):
         return new_text
     r = requests.get(f"https://beatsaver.com/api/maps/by-hash/{id}", headers=header)
     data = r.json()
-    song_author = clean_text(f"{data['metadata']['songName']} - {data['metadata']['songAuthorName']}")
+    song_author = clean_text(f"{data['metadata']['songName']} - {data['metadata']['levelAuthorName']}")
     download_url = f"https://beatsaver.com{data['directDownload']}"
-
-    urllib.request.urlretrieve(download_url, f"temp{id}.zip")
     extract_path = f"{path}\{data['key']} ({song_author})"
-    with zipfile.ZipFile(f"temp{id}.zip","r") as zip_ref:
-        zip_ref.extractall(path=extract_path)
-    os.remove(f"temp{id}.zip")
+    
+    if data['key'] not in downloaded_keys:
+        urllib.request.urlretrieve(download_url, f"temp{id}.zip")
+        with zipfile.ZipFile(f"temp{id}.zip","r") as zip_ref:
+            zip_ref.extractall(path=extract_path)
+        os.remove(f"temp{id}.zip")
+        print("beatmap downloaded")
+    else:
+        print("beatmap already downloaded")
 
 def combine_multiple_lines(lines):
     value = ""
@@ -85,6 +89,29 @@ def get_border_line(lines):
 
     return border_line
 
+def print_scoresaber_data(data):
+    score_saber_data = data
+    data = get_beatsaver_data(data["id"])
+
+    meta_data = data["metadata"]
+    stats = data["stats"]
+    duration = list(str(meta_data['duration']/60))
+    duration = duration[0] + duration[1] + duration[2]
+    lines = [
+        f"{meta_data['songAuthorName']} - {meta_data['songName']}",
+        "",
+        f"{Fore.GREEN}ID{Fore.RESET} {data['_id']}",
+        f"{Fore.GREEN}Level Author{Fore.RESET} {meta_data['levelAuthorName']}",
+        f"{Fore.GREEN}Difficulties{Fore.RESET} {get_difficulties(data)[1]}",
+        f"{Fore.GREEN}Duration{Fore.RESET} {duration} minute(s)",
+        f"{Fore.GREEN}Rating{Fore.RESET} {stats['upVotes']}/{stats['downVotes']}",
+        f"{Fore.GREEN}BPM{Fore.RESET} {int(meta_data['bpm'])}",
+        f"{Fore.GREEN}Star Difficulty{Fore.RESET} {int(score_saber_data['stars'])}"
+    ]
+    border_line = get_border_line(lines)
+    lines.insert(0,border_line)
+    print(combine_multiple_lines(lines))
+
 def print_beatsaver_data(data):
     meta_data = data["metadata"]
     stats = data["stats"]
@@ -98,7 +125,7 @@ def print_beatsaver_data(data):
         f"{Fore.GREEN}Difficulties{Fore.RESET} {get_difficulties(data)[1]}",
         f"{Fore.GREEN}Duration{Fore.RESET} {duration} minute(s)",
         f"{Fore.GREEN}Rating{Fore.RESET} {stats['upVotes']}/{stats['downVotes']}",
-        f"{Fore.GREEN}BPM{Fore.RESET} {meta_data['bpm']}"
+        f"{Fore.GREEN}BPM{Fore.RESET} {int(meta_data['bpm'])}"
     ]
     border_line = get_border_line(lines)
     lines.insert(0,border_line)
