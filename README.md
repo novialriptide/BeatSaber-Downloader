@@ -4,7 +4,8 @@ Download your BeatSaber Levels by ID instead of downloading the zip file and unz
 # Commands
 ```
 python main.py --id [beatsaber_song_id]
-
+```
+```
 python main.py --multiple [search_setting]
  - 1 Trending",
  - 2 Date Ranked",
