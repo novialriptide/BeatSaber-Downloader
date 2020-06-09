@@ -63,10 +63,10 @@ def download_beatmap(path, id, downloaded_keys):
     extract_path = f"{path}\{data['key']} ({song_author})"
     
     if data['key'] not in downloaded_keys:
-        urllib.request.urlretrieve(download_url, f"temp{id}.zip")
-        with zipfile.ZipFile(f"temp{id}.zip","r") as zip_ref:
+        urllib.request.urlretrieve(download_url, f"{id}.zip")
+        with zipfile.ZipFile(f"{id}.zip","r") as zip_ref:
             zip_ref.extractall(path=extract_path)
-        os.remove(f"temp{id}.zip")
+        os.remove(f"{id}.zip")
         print("beatmap downloaded")
     else:
         print("beatmap already downloaded")
@@ -91,42 +91,49 @@ def get_border_line(lines):
 
 def print_scoresaber_data(data):
     score_saber_data = data
-    data = get_beatsaver_data(data["id"])
+    try:
+        data = get_beatsaver_data(data["id"])
 
-    meta_data = data["metadata"]
-    stats = data["stats"]
-    duration = list(str(meta_data['duration']/60))
-    duration = duration[0] + duration[1] + duration[2]
-    lines = [
-        f"{meta_data['songAuthorName']} - {meta_data['songName']}",
-        "",
-        f"{Fore.GREEN}ID{Fore.RESET} {data['_id']}",
-        f"{Fore.GREEN}Level Author{Fore.RESET} {meta_data['levelAuthorName']}",
-        f"{Fore.GREEN}Difficulties{Fore.RESET} {get_difficulties(data)[1]}",
-        f"{Fore.GREEN}Duration{Fore.RESET} {duration} minute(s)",
-        f"{Fore.GREEN}Rating{Fore.RESET} {stats['upVotes']}/{stats['downVotes']}",
-        f"{Fore.GREEN}BPM{Fore.RESET} {int(meta_data['bpm'])}",
-        f"{Fore.GREEN}Star Difficulty{Fore.RESET} {int(score_saber_data['stars'])}"
-    ]
-    border_line = get_border_line(lines)
-    lines.insert(0,border_line)
-    print(combine_multiple_lines(lines))
+        meta_data = data["metadata"]
+        stats = data["stats"]
+        duration = list(str(meta_data['duration']/60))
+        duration = duration[0] + duration[1] + duration[2]
+        lines = [
+            f"{meta_data['songAuthorName']} - {meta_data['songName']}",
+            "",
+            f"{Fore.GREEN}ID{Fore.RESET} {data['_id']}",
+            f"{Fore.GREEN}Level Author{Fore.RESET} {meta_data['levelAuthorName']}",
+            f"{Fore.GREEN}Difficulties{Fore.RESET} {get_difficulties(data)[1]}",
+            f"{Fore.GREEN}Duration{Fore.RESET} {duration} minute(s)",
+            f"{Fore.GREEN}Rating{Fore.RESET} {stats['upVotes']}/{stats['downVotes']}",
+            f"{Fore.GREEN}BPM{Fore.RESET} {int(meta_data['bpm'])}",
+            f"{Fore.GREEN}Star Difficulty{Fore.RESET} {int(score_saber_data['stars'])}"
+        ]
+        border_line = get_border_line(lines)
+        lines.insert(0,border_line)
+        print(combine_multiple_lines(lines))
+    except:
+        print("Error producing this message")
 
 def print_beatsaver_data(data):
-    meta_data = data["metadata"]
-    stats = data["stats"]
-    duration = list(str(meta_data['duration']/60))
-    duration = duration[0] + duration[1] + duration[2]
-    lines = [
-        f"{meta_data['songAuthorName']} - {meta_data['songName']}",
-        "",
-        f"{Fore.GREEN}ID{Fore.RESET} {data['_id']}",
-        f"{Fore.GREEN}Level Author{Fore.RESET} {meta_data['levelAuthorName']}",
-        f"{Fore.GREEN}Difficulties{Fore.RESET} {get_difficulties(data)[1]}",
-        f"{Fore.GREEN}Duration{Fore.RESET} {duration} minute(s)",
-        f"{Fore.GREEN}Rating{Fore.RESET} {stats['upVotes']}/{stats['downVotes']}",
-        f"{Fore.GREEN}BPM{Fore.RESET} {int(meta_data['bpm'])}"
-    ]
-    border_line = get_border_line(lines)
-    lines.insert(0,border_line)
-    print(combine_multiple_lines(lines))
+    try:
+        meta_data = data["metadata"]
+        stats = data["stats"]
+        duration = list(str(meta_data['duration']/60))
+        duration = duration[0] + duration[1] + duration[2]
+        lines = [
+            f"{meta_data['songAuthorName']} - {meta_data['songName']}",
+            "",
+            f"{Fore.GREEN}ID{Fore.RESET} {data['_id']}",
+            f"{Fore.GREEN}Level Author{Fore.RESET} {meta_data['levelAuthorName']}",
+            f"{Fore.GREEN}Difficulties{Fore.RESET} {get_difficulties(data)[1]}",
+            f"{Fore.GREEN}Duration{Fore.RESET} {duration} minute(s)",
+            f"{Fore.GREEN}Rating{Fore.RESET} {stats['upVotes']}/{stats['downVotes']}",
+            f"{Fore.GREEN}BPM{Fore.RESET} {int(meta_data['bpm'])}",
+            f"{Fore.GREEN}Star Difficulty{Fore.RESET} N/A"
+        ]
+        border_line = get_border_line(lines)
+        lines.insert(0,border_line)
+        print(combine_multiple_lines(lines))
+    except:
+        print("Error producing this message")
